@@ -1,0 +1,8 @@
+/Tool/Backup1
+/Tool/bin/Debug
+/Tool/obj/Debug
+/Tool/Backup
+/Tool/*.user
+/Tool/*.suo
+/Tool/.vs/CalcTyper/v15/*.suo
+/Tool/obj/Release

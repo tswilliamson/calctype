@@ -57,10 +57,10 @@ namespace CalcTyper
             return (value < min) ? min : (value > max) ? max : value;
         }
 
-        public void SubPixel(bool isVertical, bool isBGR)
+        public Bitmap SubPixel(Bitmap onBitmap, bool isVertical, bool isBGR)
         {
 
-            Bitmap temp = (Bitmap)_currentBitmap;
+            Bitmap temp = (Bitmap)onBitmap;
             if (isVertical) {
                 temp.RotateFlip(RotateFlipType.Rotate90FlipNone);
             }
@@ -136,7 +136,8 @@ namespace CalcTyper
             {
                 bmap.RotateFlip(RotateFlipType.Rotate270FlipNone);
             }
-            _currentBitmap = (Bitmap)bmap.Clone();
+
+            return (Bitmap)bmap.Clone();
         }
     }
 }

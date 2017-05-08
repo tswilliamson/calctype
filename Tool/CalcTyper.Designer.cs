@@ -49,12 +49,15 @@ namespace CalcTyper
             this.menuItemZoom300 = new System.Windows.Forms.MenuItem();
             this.menuItemZoom400 = new System.Windows.Forms.MenuItem();
             this.menuItemZoom500 = new System.Windows.Forms.MenuItem();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItemFont = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
             // MainMenu1
             // 
             this.MainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItemFile,
+            this.menuItem1,
             this.menuItemSubPixel,
             this.menuItemView});
             // 
@@ -95,7 +98,7 @@ namespace CalcTyper
             // 
             // menuItemSubPixel
             // 
-            this.menuItemSubPixel.Index = 1;
+            this.menuItemSubPixel.Index = 2;
             this.menuItemSubPixel.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItemRGBH,
             this.menuItemRGBV});
@@ -115,7 +118,7 @@ namespace CalcTyper
             // 
             // menuItemView
             // 
-            this.menuItemView.Index = 2;
+            this.menuItemView.Index = 3;
             this.menuItemView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItemImageInfo,
             this.menuItemSep2,
@@ -190,6 +193,19 @@ namespace CalcTyper
             this.menuItemZoom500.Text = "500%";
             this.menuItemZoom500.Click += new System.EventHandler(this.menuItemZoom500_Click);
             // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 1;
+            this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItemFont});
+            this.menuItem1.Text = "Font";
+            // 
+            // menuItemFont
+            // 
+            this.menuItemFont.Index = 0;
+            this.menuItemFont.Text = "Process BMFont Output...";
+            this.menuItemFont.Click += new System.EventHandler(this.menuItemFont_Click);
+            // 
             // CalcTyper
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -225,6 +241,8 @@ namespace CalcTyper
         private System.Windows.Forms.MenuItem menuItemSubPixel;
         private System.Windows.Forms.MenuItem menuItemRGBH;
         private System.Windows.Forms.MenuItem menuItemRGBV;
+        private System.Windows.Forms.MenuItem menuItem1;
+        private System.Windows.Forms.MenuItem menuItemFont;
     }
 }
 

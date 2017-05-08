@@ -2,10 +2,10 @@
 fileVersion=1
 
 # font settings
-fontName=Open Sans
+fontName=Consolas
 fontFile=
 charSet=0
-fontSize=-30
+fontSize=34
 aa=2
 scaleH=100
 useSmoothing=1
@@ -20,13 +20,13 @@ renderFromOutline=0
 useClearType=0
 
 # character alignment
-paddingDown=2
-paddingUp=0
+paddingDown=3
+paddingUp=3
 paddingRight=3
 paddingLeft=3
 spacingHoriz=0
-spacingVert=2
-useFixedHeight=1
+spacingVert=0
+useFixedHeight=0
 forceZero=0
 
 # output file

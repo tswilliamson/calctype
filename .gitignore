@@ -6,3 +6,4 @@
 /Tool/*.suo
 /Tool/.vs/CalcTyper/v15/*.suo
 /Tool/obj/Release
+/Tool/bin/Release/CalcTyper.pdb

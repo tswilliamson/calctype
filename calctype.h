@@ -10,7 +10,7 @@ typedef struct __CalcTypeFont {
 	unsigned int base;				// y offset of base font line
 	unsigned int space;				// width of the font space in sub-pixels
 	unsigned char* charData;		// actual character data
-	unsigned short charOffset[256];	// offset to each char's data, 0xFFFF if not available
+	unsigned short charOffset[224];	// offset to each char's data (minus 32), 0xFFFF if not available
 } CalcTypeFont;
 
 // faux char data struct (it's embedded directly in byte data by CalcTyper

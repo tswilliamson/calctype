@@ -177,7 +177,7 @@ namespace CalcTyper
             public int yoffset;
             public int xadvance;
             public int offset;
-            public byte[] data;
+            public List<byte> data;
         }
 
         private CharInfo buildCharData(CharInfo glyph) {
@@ -202,6 +202,7 @@ namespace CalcTyper
 
             // height must be divisible by 3:
             if (glyph.height % 3 != 0) { 
+                glyph.yoffset += 3 - glyph.height % 3;
                 glyph.height += 3 - glyph.height % 3;
             }
 
@@ -213,16 +214,101 @@ namespace CalcTyper
             glyph.width = subbitmap.Width;
             glyph.height = subbitmap.Height;
 
-            glyph.data = new byte[subbitmap.Width * subbitmap.Height];
-            int curByte = 0;
+            // glyphs are packed 3:3:2
+            glyph.data = new List<byte>();
             for (int y = 0; y < subbitmap.Height; y++)
             {
                 for (int x = 0; x < subbitmap.Width; x++)
                 {
                     int packed = 0;
                     Color c = subbitmap.GetPixel(x, y);
-                    packed = (c.R & 0xE0) | ((c.G & 0xF0) >> 3) | ((c.B & 0x80) >> 7);
-                    glyph.data[curByte++] = (byte) packed;
+                    packed = (c.R & 0xE0) | ((c.G & 0xE0) >> 3) | ((c.B & 0xC0) >> 6);
+                    glyph.data.Add((byte) packed);
+                }
+            }
+
+            // trim empty rows from glyph
+
+            // top row
+            bool foundEmpty = true;
+            while (foundEmpty && glyph.data.Count != 0)
+            {
+                for (int i = 0; i < glyph.width; i++) {
+                    if (glyph.data[i] != 0)
+                    {
+                        foundEmpty = false;
+                        break;
+                    }
+                }
+                if (foundEmpty)
+                {
+                    glyph.data.RemoveRange(0, glyph.width);
+                    glyph.height--;
+                    glyph.yoffset++;
+                }
+            }
+
+            // bottom row
+            foundEmpty = true;
+            while (foundEmpty && glyph.data.Count != 0)
+            {
+                for (int i = 0; i < glyph.width; i++)
+                {
+                    if (glyph.data[glyph.data.Count - i - 1] != 0)
+                    {
+                        foundEmpty = false;
+                        break;
+                    }
+                }
+                if (foundEmpty)
+                {
+                    glyph.data.RemoveRange(glyph.data.Count - glyph.width, glyph.width);
+                    glyph.height--;
+                }
+            }
+
+            // left side
+            foundEmpty = true;
+            while (foundEmpty && glyph.data.Count != 0)
+            {
+                for (int i = 0; i < glyph.height; i++)
+                {
+                    if (glyph.data[glyph.width * i] != 0)
+                    {
+                        foundEmpty = false;
+                        break;
+                    }
+                }
+                if (foundEmpty)
+                {
+                    for (int i = 0; i < glyph.height; i++)
+                    {
+                        glyph.data.RemoveAt(i * (glyph.width - 1));
+                    }
+                    glyph.width--;
+                    glyph.xoffset++;
+                }
+            }
+
+            // right side
+            foundEmpty = true;
+            while (foundEmpty && glyph.data.Count != 0)
+            {
+                for (int i = 1; i <= glyph.height; i++)
+                {
+                    if (glyph.data[glyph.width * i - 1] != 0)
+                    {
+                        foundEmpty = false;
+                        break;
+                    }
+                }
+                if (foundEmpty)
+                {
+                    for (int i = 0; i < glyph.height; i++)
+                    {
+                        glyph.data.RemoveAt(i * (glyph.width - 1) + glyph.width - 1);
+                    }
+                    glyph.width--;
                 }
             }
 
@@ -351,7 +437,7 @@ namespace CalcTyper
                         // special case for space
                         if (info.id == 32)
                         {
-                            spaceWidth = info.width;
+                            spaceWidth = info.xadvance;
                             continue;
                         }
 
@@ -368,6 +454,30 @@ namespace CalcTyper
 
                 if (chars.Count > 0)
                 {
+                    // check to see if the font is monospaced (all characters will have same xadvance)
+                    int checkAdvance = chars[0].xadvance;
+                    bool isMonospaced = true;
+                    for (int i = 1; i < chars.Count; i++)
+                    {
+                        if (chars[i].xadvance != checkAdvance)
+                        {
+                            isMonospaced = false;
+                        }
+                    }
+
+                    // if the font is monospaced, all xadvance values should be on the pixel barrier
+                    if (isMonospaced && checkAdvance % 3 != 0)
+                    {
+                        int toSub = checkAdvance % 3;
+                        for (int i = 0; i < chars.Count; i++)
+                        {
+                            CharInfo c = chars[i];
+                            c.xadvance -= toSub;
+                            chars[i] = c;
+                        }
+                        spaceWidth -= toSub;
+                    }
+
                     // create our output .c/.h files containing the pertinent data
                     string cFile = fontDlg.FileName.Substring(0, fontFile.Length - 3) + "c";
                     string hFile = fontDlg.FileName.Substring(0, fontFile.Length - 3) + "h";
@@ -394,7 +504,7 @@ namespace CalcTyper
                     // build line for each character data
                     int[] offsets = new int[256];
                     int curOffset = 0;
-                    for (int i  = 0; i < 256; i++)
+                    for (int i  = 33; i < 256; i++)
                     {
                         if (usedChars[i])
                         {
@@ -423,18 +533,18 @@ namespace CalcTyper
                             }
                             else
                             {
-                                charLine += ((chars[index].yoffset + 1) / 3) + ",";
+                                charLine += ((chars[index].yoffset) / 3) + ",";
                             }
                             charLine += chars[index].xadvance + ",";
                             charLine += chars[index].width + ",";
                             charLine += chars[index].height + ",";
-                            for (int j = 0; j < chars[index].data.Length; j++) {
+                            for (int j = 0; j < chars[index].data.Count; j++) {
                                 charLine += chars[index].data[j] + ",";
                             }
 
                             charLine += "  // " + i;
                             cWriter.WriteLine(charLine);
-                            curOffset += 5 + chars[index].data.Length;
+                            curOffset += 5 + chars[index].data.Count;
                         } else {
                             offsets[i] = 0xFFFF;
                         }
@@ -443,14 +553,14 @@ namespace CalcTyper
                     cWriter.WriteLine("};");
                     cWriter.WriteLine("");
                     cWriter.WriteLine("CalcTypeFont " + fileBase + " = {");
-                    cWriter.WriteLine("\t" + Convert.ToString((lineHeight + 2) / 3) + ",  // height");
-                    cWriter.WriteLine("\t" + Convert.ToString((lineBase + 2) / 3) + ",  // base");
-                    cWriter.WriteLine("\t" + Convert.ToString((spaceWidth + 2) / 3) + ",  // space");
+                    cWriter.WriteLine("\t" + ((lineHeight + 2) / 3) + ",  // height");
+                    cWriter.WriteLine("\t" + ((lineBase + 2) / 3) + ",  // base");
+                    cWriter.WriteLine("\t" + spaceWidth + ",  // space");
                     cWriter.WriteLine("\t__charData_" + fileBase + ",  // char data");
 
                     // each character offset
                     cWriter.WriteLine("\t{");
-                    for (int i = 0; i < 256; i++)
+                    for (int i = 32; i < 256; i++)
                     {
                         cWriter.WriteLine("\t\t" + offsets[i] + ",");
                     }

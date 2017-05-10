@@ -35,8 +35,8 @@ inline void CalcType_DrawGlyph(CalcTypeCharData* glyph, int x, int y, unsigned c
 			// interpolate has a lot of divides in it currently (probably can be mitigated with something clever)
 			col = //drawColor;
 				(((RED_PART(col) * ((screenAmt & 0xE0) >> 5) + drawRed * ((dataByte & 0xE0) >> 5)) / 7) << 11) |
-				(((GREEN_PART(col) * ((screenAmt & 0x1E) >> 1) + drawGreen * ((dataByte & 0x1E) >> 1)) / 15) << 5) |
-				(((BLUE_PART(col) * (screenAmt & 1) + drawBlue * (dataByte & 1))));
+				(((GREEN_PART(col) * ((screenAmt & 0x1C) >> 2) + drawGreen * ((dataByte & 0x1C) >> 2)) / 7) << 5) |
+				(((BLUE_PART(col) * (screenAmt & 3) + drawBlue * (dataByte & 3)) / 3));
 
 			*drawTo = col;
 		}

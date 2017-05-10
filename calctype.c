@@ -49,7 +49,7 @@ void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned 
 				y += font->height;
 			}
 		} else {
-			unsigned short dataOffset = font->charOffset[*text];
+			unsigned short dataOffset = font->charOffset[(*text) - 32];
 			if (dataOffset != 0xFFFF) {
 				CalcTypeCharData* glyph = (CalcTypeCharData*)(font->charData + dataOffset);
 				CalcType_DrawGlyph(glyph, (subX + glyph->xOffset) / 3, y + glyph->yOffset, vram, pitch);

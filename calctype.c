@@ -9,11 +9,11 @@ unsigned int CalcType_Width(CalcTypeFont* font, const char* text) {
 		if (*text <= 32) {
 			if (*text == 32) {
 				subPixelWidth += font->space;
-			} else if (*text == '/n') {
+			} else if (*text == '\n') {
 				// currently bad for multiline draws
 			}
 		} else {
-			unsigned short dataOffset = font->charOffset[*text];
+			unsigned short dataOffset = font->charOffset[(int) *text];
 			if (dataOffset != 0xFFFF) {
 				subPixelWidth += ((CalcTypeCharData*)(font->charData + dataOffset))->xAdvance;
 			}

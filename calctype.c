@@ -27,7 +27,7 @@ unsigned int CalcType_Width(CalcTypeFont* font, const char* text) {
 /*
 	Draws the given font data to the given position. Use 0 for vram and pitch to use device defaults.
  */
-void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned char* vram, unsigned int pitch) {
+void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned short color, unsigned char* vram, unsigned int pitch) {
 	if (vram == 0) {
 		vram = CalcType_DefaultVRAM();
 	}
@@ -52,7 +52,7 @@ void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned 
 			unsigned short dataOffset = font->charOffset[(*text) - 32];
 			if (dataOffset != 0xFFFF) {
 				CalcTypeCharData* glyph = (CalcTypeCharData*)(font->charData + dataOffset);
-				CalcType_DrawGlyph(glyph, (subX + glyph->xOffset) / 3, y + glyph->yOffset, vram, pitch);
+				CalcType_DrawGlyph(glyph, (subX + glyph->xOffset) / 3, y + glyph->yOffset, color, vram, pitch);
 				subX += glyph->xAdvance;
 			}
 		}

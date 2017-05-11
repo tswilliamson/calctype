@@ -31,5 +31,7 @@ unsigned int CalcType_Width(CalcTypeFont* font, const char* text);
 
 /*
 	Draws the given font data to the given position. Use 0 for vram and pitch to use device defaults.
+
+	color is "platform" encoded color
  */
-void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned char* vram, unsigned int pitch);
+void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned short color, unsigned char* vram, unsigned int pitch);

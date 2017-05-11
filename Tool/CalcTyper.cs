@@ -152,7 +152,7 @@ namespace CalcTyper
 
         private void menuItemRGBH_Click(object sender, EventArgs e)
         {
-            imageHandler.CurrentBitmap = imageHandler.SubPixel(imageHandler.CurrentBitmap, false, false);
+            imageHandler.CurrentBitmap = imageHandler.SubPixel(imageHandler.CurrentBitmap, false, false, false);
             this.AutoScroll = true;
             this.AutoScrollMinSize = new Size(Convert.ToInt32(imageHandler.CurrentBitmap.Width * zoomFactor), Convert.ToInt32(imageHandler.CurrentBitmap.Height * zoomFactor));
             this.Invalidate();
@@ -160,7 +160,7 @@ namespace CalcTyper
 
         private void menuItemRGBV_Click(object sender, EventArgs e)
         {
-            imageHandler.CurrentBitmap = imageHandler.SubPixel(imageHandler.CurrentBitmap, true, false);
+            imageHandler.CurrentBitmap = imageHandler.SubPixel(imageHandler.CurrentBitmap, true, false, false);
             this.AutoScroll = true;
             this.AutoScrollMinSize = new Size(Convert.ToInt32(imageHandler.CurrentBitmap.Width * zoomFactor), Convert.ToInt32(imageHandler.CurrentBitmap.Height * zoomFactor));
             this.Invalidate();
@@ -201,18 +201,20 @@ namespace CalcTyper
             }
 
             // height must be divisible by 3:
-            if (glyph.height % 3 != 0) { 
-                glyph.yoffset += 3 - glyph.height % 3;
+            if (glyph.height % 3 != 0)
+            {
+                glyph.yoffset -= 3 - glyph.height % 3;
                 glyph.height += 3 - glyph.height % 3;
             }
+
+            int srcBottom = glyph.yoffset + glyph.height;
+
 
             Rectangle cropArea = new Rectangle(glyph.x, glyph.y, glyph.width, glyph.height);
 
             Bitmap subbitmap = imageHandler.CurrentBitmap.Clone(cropArea, imageHandler.CurrentBitmap.PixelFormat);
-            subbitmap = imageHandler.SubPixel(subbitmap, false, false);
+            subbitmap = imageHandler.SubPixel(subbitmap, false, false, true);
 
-            glyph.width = subbitmap.Width;
-            glyph.height = subbitmap.Height;
 
             // glyphs are packed 3:3:2
             glyph.data = new List<byte>();
@@ -226,6 +228,9 @@ namespace CalcTyper
                     glyph.data.Add((byte) packed);
                 }
             }
+
+            glyph.width = subbitmap.Width;
+            glyph.height = subbitmap.Height;
 
             // trim empty rows from glyph
 
@@ -244,7 +249,7 @@ namespace CalcTyper
                 {
                     glyph.data.RemoveRange(0, glyph.width);
                     glyph.height--;
-                    glyph.yoffset++;
+                    glyph.yoffset += 3;
                 }
             }
 
@@ -286,7 +291,7 @@ namespace CalcTyper
                         glyph.data.RemoveAt(i * (glyph.width - 1));
                     }
                     glyph.width--;
-                    glyph.xoffset++;
+                    glyph.xoffset += 3;
                 }
             }
 
@@ -311,7 +316,7 @@ namespace CalcTyper
                     glyph.width--;
                 }
             }
-
+            
             return glyph;
         }
 
@@ -527,13 +532,13 @@ namespace CalcTyper
                             {
                                 charLine += chars[index].xoffset + ",";
                             }
-                            if (chars[index].yoffset < 0)
+                            if (chars[index].yoffset < -2)
                             {
-                                charLine += (256 + chars[index].yoffset) + ",";
+                                charLine += (256 + chars[index].yoffset / 3) + ",";
                             }
                             else
                             {
-                                charLine += ((chars[index].yoffset) / 3) + ",";
+                                charLine += (chars[index].yoffset / 3) + ",";
                             }
                             charLine += chars[index].xadvance + ",";
                             charLine += chars[index].width + ",";
@@ -553,8 +558,8 @@ namespace CalcTyper
                     cWriter.WriteLine("};");
                     cWriter.WriteLine("");
                     cWriter.WriteLine("CalcTypeFont " + fileBase + " = {");
-                    cWriter.WriteLine("\t" + ((lineHeight + 2) / 3) + ",  // height");
-                    cWriter.WriteLine("\t" + ((lineBase + 2) / 3) + ",  // base");
+                    cWriter.WriteLine("\t" + ((lineHeight + 1) / 3) + ",  // height");
+                    cWriter.WriteLine("\t" + ((lineBase + 1) / 3) + ",  // base");
                     cWriter.WriteLine("\t" + spaceWidth + ",  // space");
                     cWriter.WriteLine("\t__charData_" + fileBase + ",  // char data");
 

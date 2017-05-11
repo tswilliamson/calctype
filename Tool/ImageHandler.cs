@@ -57,8 +57,9 @@ namespace CalcTyper
             return (value < min) ? min : (value > max) ? max : value;
         }
 
-        public Bitmap SubPixel(Bitmap onBitmap, bool isVertical, bool isBGR)
+        public Bitmap SubPixel(Bitmap onBitmap, bool isVertical, bool isBGR, bool isText)
         {
+            float maxBias = isText ? 0.4f : 0.0f;
 
             Bitmap temp = (Bitmap)onBitmap;
             if (isVertical) {
@@ -92,26 +93,41 @@ namespace CalcTyper
                     }
 
                     // average color for current pixel
-                    double red = 0;
-                    double green = 0;
-                    double blue = 0;
-                    for (int sx = 0; sx < 3; sx++)
+                    double maxRed = 0, maxGreen = 0, maxBlue = 0;
+                    double allAvgRed = 0, allAvgGreen = 0, allAvgBlue = 0;
+                    for (int sy = 0; sy < 3; sy++)
                     {
-                        for (int sy = 0; sy < 3; sy++)
+                        double avgRed = 0;
+                        double avgGreen = 0;
+                        double avgBlue = 0;
+                        for (int sx = 0; sx < 3; sx++)
                         {
-                            red += colorMat[sx + 2, sy].R;
-                            green += colorMat[sx + 2, sy].G;
-                            blue += colorMat[sx + 2, sy].B;
+                            avgRed += colorMat[sx + 2, sy].R;
+                            avgGreen += colorMat[sx + 2, sy].G;
+                            avgBlue += colorMat[sx + 2, sy].B;
                         }
+                        avgRed = avgRed / 3.0;
+                        avgGreen = avgGreen / 3.0;
+                        avgBlue = avgBlue / 3.0;
+
+                        allAvgRed += avgRed / 3.0f;
+                        allAvgGreen += avgGreen / 3.0f;
+                        allAvgBlue += avgBlue / 3.0f;
+
+                        maxRed = Math.Max(maxRed, avgRed);
+                        maxGreen = Math.Max(maxGreen, avgGreen);
+                        maxBlue = Math.Max(maxBlue, avgBlue);
                     }
-                    red /= 9.0;
-                    green /= 9.0;
-                    blue /= 9.0;
+                    double red = (maxRed * maxBias + allAvgRed * (1.0 - maxBias));
+                    double green = (maxGreen * maxBias + allAvgGreen * (1.0 - maxBias));
+                    double blue = (maxBlue * maxBias + allAvgBlue * (1.0 - maxBias));
 
                     // determine the luminance of each local energy column
                     for (int c = 0; c < 7; c++)
                     {
-                        lum[c] = (luminance(colorMat[c,0]) + luminance(colorMat[c,1]) + luminance(colorMat[c,2])) / 3.0;
+                        lum[c] =
+                            Math.Max(Math.Max(luminance(colorMat[c,0]), luminance(colorMat[c,1])), luminance(colorMat[c,2])) * maxBias +
+                            (luminance(colorMat[c, 0]) + luminance(colorMat[c, 1]) + luminance(colorMat[c, 2])) / 3.0f * (1.0 - maxBias);
                     }
                     double avgLum = (lum[2] + lum[3] + lum[4]) / 3.0;
 

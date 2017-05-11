@@ -2,10 +2,10 @@
 fileVersion=1
 
 # font settings
-fontName=Consolas
+fontName=Candara
 fontFile=
 charSet=0
-fontSize=34
+fontSize=35
 aa=2
 scaleH=100
 useSmoothing=1
@@ -24,14 +24,14 @@ paddingDown=3
 paddingUp=3
 paddingRight=3
 paddingLeft=3
-spacingHoriz=0
-spacingVert=0
+spacingHoriz=3
+spacingVert=3
 useFixedHeight=0
 forceZero=0
 
 # output file
-outWidth=513
-outHeight=513
+outWidth=999
+outHeight=999
 outBitDepth=32
 fontDescFormat=0
 fourChnlPacked=0
@@ -50,6 +50,6 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-126,160-255
+chars=32-34,37,39-44,46-63,65-90
 
 # imported icon images

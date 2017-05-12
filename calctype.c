@@ -13,7 +13,7 @@ unsigned int CalcType_Width(CalcTypeFont* font, const char* text) {
 				// currently bad for multiline draws
 			}
 		} else {
-			unsigned short dataOffset = font->charOffset[(int) *text];
+			unsigned short dataOffset = font->charOffset[((int) *text) - 32];
 			if (dataOffset != 0xFFFF) {
 				subPixelWidth += ((CalcTypeCharData*)(font->charData + dataOffset))->xAdvance;
 			}

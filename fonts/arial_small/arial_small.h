@@ -3,5 +3,5 @@
 
 #include "../../calctype.h"
 
-extern CalcTypeFont arial_small;
+extern const CalcTypeFont arial_small;
 

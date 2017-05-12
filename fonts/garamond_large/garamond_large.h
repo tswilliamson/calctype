@@ -3,5 +3,5 @@
 
 #include "../../calctype.h"
 
-extern CalcTypeFont garamond_large;
+extern const CalcTypeFont garamond_large;
 

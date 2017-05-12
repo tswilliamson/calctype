@@ -3,7 +3,7 @@
 /*
 	Returns the width in pixels of the given text using the given font
 */
-unsigned int CalcType_Width(CalcTypeFont* font, const char* text) {
+unsigned int CalcType_Width(const CalcTypeFont* font, const char* text) {
 	unsigned int subPixelWidth = 0;
 	while (*text) {
 		if (*text <= 32) {
@@ -27,7 +27,7 @@ unsigned int CalcType_Width(CalcTypeFont* font, const char* text) {
 /*
 	Draws the given font data to the given position. Use 0 for vram and pitch to use device defaults.
  */
-void CalcType_Draw(CalcTypeFont* font, const char* text, int x, int y, unsigned short color, unsigned char* vram, unsigned int pitch) {
+void CalcType_Draw(const CalcTypeFont* font, const char* text, int x, int y, unsigned short color, unsigned char* vram, unsigned int pitch) {
 	if (vram == 0) {
 		vram = CalcType_DefaultVRAM();
 	}

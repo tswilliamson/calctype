@@ -1,7 +1,7 @@
 /* Generated font file for CalcType (Prizm) */
 #include "consolas_small.h"
 
-unsigned char __charData_consolas_small[] = {
+const unsigned char __charData_consolas_small[] = {
 	4,1,15,2,7,46,213,47,217,46,213,46,213,46,213,42,145,51,218,  // 33
 	2,1,15,4,3,83,209,115,209,83,209,115,204,41,104,46,136,  // 34
 	255,1,15,6,7,0,9,104,37,104,0,0,46,177,78,177,0,46,255,255,255,255,136,0,87,168,87,168,0,82,223,251,223,250,68,42,219,182,219,177,32,0,150,69,150,68,0,  // 35
@@ -110,7 +110,7 @@ unsigned char __charData_consolas_small[] = {
 	0,3,15,5,4,42,141,42,145,0,10,219,105,191,136,0,155,177,151,204,46,218,78,218,64,  // 187
 };
 
-CalcTypeFont consolas_small = {
+const CalcTypeFont consolas_small = {
 	11,  // height
 	9,  // base
 	15,  // space

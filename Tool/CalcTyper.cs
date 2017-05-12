@@ -496,7 +496,7 @@ namespace CalcTyper
                     hWriter.WriteLine("");
                     hWriter.WriteLine("#include \"../../calctype.h\"");
                     hWriter.WriteLine("");
-                    hWriter.WriteLine("extern CalcTypeFont " + fileBase + ";");
+                    hWriter.WriteLine("extern const CalcTypeFont " + fileBase + ";");
                     hWriter.WriteLine("");
                     hWriter.Close();
 
@@ -504,7 +504,7 @@ namespace CalcTyper
                     cWriter.WriteLine(headerComment);
                     cWriter.WriteLine("#include \"" + fileBase + ".h\"");
                     cWriter.WriteLine("");
-                    cWriter.WriteLine("unsigned char __charData_" + fileBase + "[] = {");
+                    cWriter.WriteLine("const unsigned char __charData_" + fileBase + "[] = {");
 
                     // build line for each character data
                     int[] offsets = new int[256];
@@ -557,7 +557,7 @@ namespace CalcTyper
 
                     cWriter.WriteLine("};");
                     cWriter.WriteLine("");
-                    cWriter.WriteLine("CalcTypeFont " + fileBase + " = {");
+                    cWriter.WriteLine("const CalcTypeFont " + fileBase + " = {");
                     cWriter.WriteLine("\t" + ((lineHeight + 1) / 3) + ",  // height");
                     cWriter.WriteLine("\t" + ((lineBase + 1) / 3) + ",  // base");
                     cWriter.WriteLine("\t" + spaceWidth + ",  // space");

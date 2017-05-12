@@ -3,5 +3,5 @@
 
 #include "../../calctype.h"
 
-extern CalcTypeFont consolas_intl;
+extern const CalcTypeFont consolas_intl;
 

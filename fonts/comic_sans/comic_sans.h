@@ -3,5 +3,5 @@
 
 #include "../../calctype.h"
 
-extern CalcTypeFont comic_sans;
+extern const CalcTypeFont comic_sans;
 

@@ -3,5 +3,5 @@
 
 #include "../../calctype.h"
 
-extern CalcTypeFont candara_tiny;
+extern const CalcTypeFont candara_tiny;
 
